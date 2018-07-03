@@ -61,7 +61,9 @@ INSERT INTO
   questions (title, body, user_id)
 VALUES
   ('How do I SQL?!?!', 'Please help me :(', 4),
-  ('Where''s Tinkerbell?', 'I haven''t seen her in 4 weeks...', 1);
+  ('Where''s Tinkerbell?', 'I haven''t seen her in 4 weeks...', 1),
+  ('Test', 'Test', 1),
+  ('Test2', 'Test2', 1);
 
 INSERT INTO
   question_follows (question_id, user_id)
@@ -69,6 +71,7 @@ VALUES
   (1, 4),
   (2, 1),
   (1, 3),
+  (2, 3),
   (2, 2);
 
 INSERT INTO
@@ -83,4 +86,5 @@ INSERT INTO
   question_likes (question_id, user_id)
 VALUES
   (2, 2),
-  (1, 3);
+  (1, 3),
+  (2, 1);
