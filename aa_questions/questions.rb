@@ -1,5 +1,6 @@
 require 'singleton'
 require 'sqlite3'
+require_relative 'model_base'
 
 class QuestionsDatabase < SQLite3::Database
 
@@ -12,23 +13,12 @@ class QuestionsDatabase < SQLite3::Database
   end
 end
 
-class User
+class User < ModelBase
 
   attr_accessor :fname, :lname
 
-  def self.find_by_id(id)
-    user = QuestionsDatabase.instance.execute(<<-SQL, id)
-      SELECT
-        *
-      FROM
-        users
-      WHERE
-        id = ?
-    SQL
-
-    return nil if user.empty?
-
-    User.new(user.first)
+  def self.table
+    "users"
   end
 
   def self.find_by_name(fname, lname)
@@ -87,45 +77,34 @@ class User
     karma.first.values.first
   end
 
-  def save
-    if @id.nil?
-      QuestionsDatabase.instance.execute(<<-SQL, @fname, @lname)
-        INSERT INTO
-          users (fname, lname)
-        VALUES
-          (?, ?)
-      SQL
-      @id = QuestionsDatabase.instance.last_insert_row_id
-    else
-      QuestionsDatabase.instance.execute(<<-SQL, @fname, @lname, @id)
-        UPDATE
-          users
-        SET
-          fname = ?, lname = ?
-        WHERE
-          id = ?
-      SQL
-    end
-  end
+  # def save
+  #   if @id.nil?
+  #     QuestionsDatabase.instance.execute(<<-SQL, @fname, @lname)
+  #       INSERT INTO
+  #         users (fname, lname)
+  #       VALUES
+  #         (?, ?)
+  #     SQL
+  #     @id = QuestionsDatabase.instance.last_insert_row_id
+  #   else
+  #     QuestionsDatabase.instance.execute(<<-SQL, @fname, @lname, @id)
+  #       UPDATE
+  #         users
+  #       SET
+  #         fname = ?, lname = ?
+  #       WHERE
+  #         id = ?
+  #     SQL
+  #   end
+  # end
 end
 
-class Question
+class Question < ModelBase
 
   attr_accessor :title, :body, :user_id
 
-  def self.find_by_id(id)
-    question = QuestionsDatabase.instance.execute(<<-SQL, id)
-      SELECT
-        *
-      FROM
-        questions
-      WHERE
-        id = ?
-    SQL
-
-    return nil if question.empty?
-
-    Question.new(question.first)
+  def self.table
+    "questions"
   end
 
   def self.find_by_author_id(author_id)
@@ -263,23 +242,12 @@ class QuestionFollow
   end
 end
 
-class Reply
+class Reply < ModelBase
 
   attr_accessor :question_id, :parent_id, :user_id, :body
 
-  def self.find_by_id(id)
-    reply = QuestionsDatabase.instance.execute(<<-SQL, id)
-      SELECT
-        *
-      FROM
-        replies
-      WHERE
-        id = ?
-    SQL
-
-    return nil if reply.empty?
-
-    Reply.new(reply.first)
+  def self.table
+    "replies"
   end
 
   def self.find_by_user_id(user_id)
